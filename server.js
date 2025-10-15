@@ -18,6 +18,9 @@ const PORT = process.env.PORT || 3000;
 
 // GitHub token for authenticated requests (optional, increases rate limit)
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
+// Allow overriding Chrome binary and cache dir in hosting envs
+const PUPPETEER_EXECUTABLE_PATH = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_PATH || '';
+const PUPPETEER_CACHE_DIR = process.env.PUPPETEER_CACHE_DIR || process.env.PUPPETEER_CACHE || '';
 
 // Serve static files (like index.html)
 app.use(express.static('public'));
@@ -191,10 +194,17 @@ app.get('/pdf', async (req, res) => {
     
     // 6. Launch Puppeteer and generate PDF
     const puppeteer = await getPuppeteer();
-    const browser = await puppeteer.launch({
+    const launchOptions = {
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    };
+    if (PUPPETEER_EXECUTABLE_PATH) {
+      launchOptions.executablePath = PUPPETEER_EXECUTABLE_PATH;
+    }
+    if (PUPPETEER_CACHE_DIR) {
+      launchOptions.cacheDirectory = PUPPETEER_CACHE_DIR;
+    }
+    const browser = await puppeteer.launch(launchOptions);
 
     try {
       const page = await browser.newPage();

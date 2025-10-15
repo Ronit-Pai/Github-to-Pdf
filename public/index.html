@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GitHub → PDF Resume Generator</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 20px;
+		}
+		
+		.container {
+			background: white;
+			border-radius: 20px;
+			padding: 50px;
+			box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+			max-width: 640px;
+			width: 100%;
+		}
+		
+		h1 {
+			color: #333;
+			margin-bottom: 10px;
+			font-size: 2.2em;
+			text-align: center;
+		}
+		
+		.subtitle {
+			color: #666;
+			text-align: center;
+			margin-bottom: 30px;
+			font-size: 1.05em;
+		}
+		
+		.github-icon {
+			text-align: center;
+			margin-bottom: 20px;
+		}
+		
+		.github-icon svg {
+			width: 72px;
+			height: 72px;
+			fill: #333;
+		}
+		
+		.form-group {
+			margin-bottom: 20px;
+		}
+		
+		label {
+			display: block;
+			margin-bottom: 10px;
+			color: #333;
+			font-weight: 600;
+			font-size: 1.05em;
+		}
+		
+		input[type="text"] {
+			width: 100%;
+			padding: 14px 16px;
+			border: 2px solid #e0e0e0;
+			border-radius: 10px;
+			font-size: 1.05em;
+			transition: all 0.3s ease;
+			outline: none;
+		}
+		
+		input[type="text"]:focus {
+			border-color: #667eea;
+			box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+		}
+		
+		.btn {
+			width: 100%;
+			padding: 14px 20px;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			border: none;
+			border-radius: 10px;
+			font-size: 1.1em;
+			font-weight: 600;
+			cursor: pointer;
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+		
+		.btn:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+		}
+		
+		.btn:active {
+			transform: translateY(0);
+		}
+		
+		.btn:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+		
+		.examples {
+			margin-top: 24px;
+			padding-top: 20px;
+			border-top: 1px solid #e0e0e0;
+		}
+		
+		.examples h3 {
+			color: #666;
+			font-size: 0.9em;
+			margin-bottom: 10px;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+		}
+		
+		.example-links {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+		
+		.example-link {
+			padding: 8px 16px;
+			background: #f5f5f5;
+			border-radius: 6px;
+			color: #667eea;
+			text-decoration: none;
+			font-size: 0.9em;
+			transition: all 0.2s ease;
+		}
+		
+		.example-link:hover {
+			background: #667eea;
+			color: white;
+		}
+		
+		.loading {
+			display: none;
+			text-align: center;
+			margin-top: 16px;
+			color: #667eea;
+			font-weight: 600;
+		}
+		
+		.loading.active {
+			display: block;
+		}
+		
+		.spinner {
+			border: 3px solid #f3f3f3;
+			border-top: 3px solid #667eea;
+			border-radius: 50%;
+			width: 36px;
+			height: 36px;
+			animation: spin 1s linear infinite;
+			margin: 16px auto;
+		}
+		
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+		
+		.error {
+			display: none;
+			margin-top: 16px;
+			padding: 12px;
+			background: #fee;
+			border: 1px solid #fcc;
+			border-radius: 8px;
+			color: #c33;
+		}
+		
+		.error.active {
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="github-icon">
+			<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+				<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.07 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38C13.71 14.53 16 11.54 16 8 16 3.58 12.42 0 8 0z"/>
+			</svg>
+		</div>
+		<h1>GitHub → PDF</h1>
+		<p class="subtitle">Enter a GitHub username to generate a polished, printable PDF of their profile and top repositories.</p>
+		<form id="usernameForm">
+			<div class="form-group">
+				<label for="username">GitHub Username</label>
+				<input id="username" type="text" placeholder="e.g. torvalds" autocomplete="username" required />
+			</div>
+			<button id="generateBtn" type="submit" class="btn">Generate PDF</button>
+			<div id="loading" class="loading">
+				<div class="spinner"></div>
+				Generating PDF...
+			</div>
+			<div id="error" class="error" role="alert"></div>
+		</form>
+		<div class="examples">
+			<h3>Try one of these:</h3>
+			<div class="example-links">
+				<a class="example-link" href="#" data-username="octocat">octocat</a>
+				<a class="example-link" href="#" data-username="torvalds">torvalds</a>
+				<a class="example-link" href="#" data-username="gaearon">gaearon</a>
+				<a class="example-link" href="#" data-username="sindresorhus">sindresorhus</a>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		(function() {
+			const form = document.getElementById('usernameForm');
+			const input = document.getElementById('username');
+			const btn = document.getElementById('generateBtn');
+			const loading = document.getElementById('loading');
+			const errorBox = document.getElementById('error');
+			const examples = document.querySelectorAll('.example-link');
+
+			function setLoading(isLoading) {
+				btn.disabled = isLoading;
+				loading.classList.toggle('active', isLoading);
+			}
+
+			function showError(msg) {
+				errorBox.textContent = msg;
+				errorBox.classList.add('active');
+			}
+
+			function clearError() {
+				errorBox.textContent = '';
+				errorBox.classList.remove('active');
+			}
+
+			examples.forEach((el) => {
+				el.addEventListener('click', (e) => {
+					e.preventDefault();
+					input.value = el.getAttribute('data-username') || '';
+				});
+			});
+
+			form.addEventListener('submit', (e) => {
+				e.preventDefault();
+				clearError();
+				const username = (input.value || '').trim();
+				if (!username) {
+					showError('Please enter a GitHub username.');
+					return;
+				}
+				setLoading(true);
+				// Navigate to the preview page; user will click Download PDF there
+				window.location.href = `/preview?username=${encodeURIComponent(username)}`;
+				// Reset loading state after a delay in case navigation is blocked
+				setTimeout(() => setLoading(false), 4000);
+			});
+		})();
+	</script>
+</body>
+</html>

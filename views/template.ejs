@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user.name %> - GitHub Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #ffffff;
+            padding: 40px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #0366d6;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-right: 30px;
+            border: 4px solid #0366d6;
+        }
+        
+        .header-info {
+            flex: 1;
+        }
+        
+        .name {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #24292e;
+            margin-bottom: 5px;
+        }
+        
+        .username {
+            font-size: 1.3em;
+            color: #586069;
+            margin-bottom: 10px;
+        }
+        
+        .bio {
+            font-size: 1.1em;
+            color: #444;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            font-size: 0.95em;
+        }
+        
+        .stat-label {
+            color: #586069;
+            margin-right: 5px;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            color: #0366d6;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f6f8fa;
+            border-radius: 8px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95em;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            margin-right: 8px;
+            color: #586069;
+        }
+        
+        .info-value {
+            color: #24292e;
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #24292e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e1e4e8;
+        }
+        
+        .repos {
+            margin-bottom: 30px;
+        }
+        
+        .repo {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f6f8fa;
+            border-left: 4px solid #0366d6;
+            border-radius: 6px;
+            page-break-inside: avoid;
+        }
+        
+        .repo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .repo-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #0366d6;
+            margin-bottom: 5px;
+        }
+        
+        .repo-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+        }
+        
+        .repo-stat {
+            display: flex;
+            align-items: center;
+            color: #586069;
+        }
+        
+        .repo-stat-icon {
+            margin-right: 4px;
+        }
+        
+        .repo-description {
+            color: #586069;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .repo-language {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #0366d6;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e1e4e8;
+            text-align: center;
+            color: #586069;
+            font-size: 0.9em;
+        }
+        
+        .footer a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        .download-bar {
+            position: sticky;
+            top: 0;
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .download-button {
+            background: #0366d6;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        @media print {
+            .download-bar { display: none; }
+        }
+        
+        /* Print-specific styles */
+        @media print {
+            body {
+                padding: 20px;
+            }
+            
+            .repo {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <img src="<%= user.avatar %>" alt="<%= user.name %>" class="avatar">
+            <div class="header-info">
+                <h1 class="name"><%= user.name %></h1>
+                <div class="username">@<%= user.login %></div>
+                <% if (user.bio) { %>
+                <p class="bio"><%= user.bio %></p>
+                <% } %>
+                <div class="stats">
+                    <div class="stat">
+                        <span class="stat-label">Followers:</span>
+                        <span class="stat-value"><%= user.followers %></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Following:</span>
+                        <span class="stat-value"><%= user.following %></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Public Repos:</span>
+                        <span class="stat-value"><%= user.publicRepos %></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <% if (readmeHtml) { %>
+        <h2 class="section-title">📘 Profile README</h2>
+        <div class="repo" style="border-left-color:#28a745;">
+            <div class="repo-description" style="color:#24292e;">
+                <!-- Sanitized README HTML inserted -->
+                <%- readmeHtml %>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Info Grid -->
+        <div class="info-grid">
+            <% if (user.company) { %>
+            <div class="info-item">
+                <span class="info-label">🏢 Company:</span>
+                <span class="info-value"><%= user.company %></span>
+            </div>
+            <% } %>
+            <% if (user.location) { %>
+            <div class="info-item">
+                <span class="info-label">📍 Location:</span>
+                <span class="info-value"><%= user.location %></span>
+            </div>
+            <% } %>
+            <% if (user.email) { %>
+            <div class="info-item">
+                <span class="info-label">📧 Email:</span>
+                <span class="info-value"><%= user.email %></span>
+            </div>
+            <% } %>
+            <% if (user.blog) { %>
+            <div class="info-item">
+                <span class="info-label">🔗 Website:</span>
+                <span class="info-value"><%= user.blog %></span>
+            </div>
+            <% } %>
+            <div class="info-item">
+                <span class="info-label">📅 Joined:</span>
+                <span class="info-value"><%= user.createdAt %></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">🔗 Profile:</span>
+                <span class="info-value"><%= user.profileUrl %></span>
+            </div>
+        </div>
+        
+        <% if (typeof showDownloadButton !== 'undefined' && showDownloadButton) { %>
+        <div class="download-bar">
+            <div><strong>Preview mode</strong> — review the content, then download a PDF.</div>
+            <button class="download-button" onclick="window.location.href='/pdf?username=<%= user.login %>'">Download PDF</button>
+        </div>
+        <% } %>
+
+        <!-- Top Repositories Section -->
+        <h2 class="section-title">⭐ Top Repositories</h2>
+        <div class="repos">
+            <% repos.forEach((repo, index) => { %>
+            <div class="repo">
+                <div class="repo-header">
+                    <div>
+                        <div class="repo-name"><%= index + 1 %>. <%= repo.name %></div>
+                        <div class="repo-description"><%= repo.description %></div>
+                    </div>
+                </div>
+                <div class="repo-stats">
+                    <div class="repo-stat">
+                        <span class="repo-stat-icon">⭐</span>
+                        <span><%= repo.stars %> stars</span>
+                    </div>
+                    <div class="repo-stat">
+                        <span class="repo-stat-icon">🔱</span>
+                        <span><%= repo.forks %> forks</span>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <span class="repo-language"><%= repo.language %></span>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Generated on <%= generatedAt %> via <a href="<%= user.profileUrl %>">GitHub → PDF</a></p>
+            <p>Profile: <a href="<%= user.profileUrl %>"><%= user.profileUrl %></a></p>
+        </div>
+    </div>
+</body>
+</html>
